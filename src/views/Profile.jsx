@@ -19,6 +19,22 @@ const Profile = ({user, logout}) => {
                 <Text style={styles.titleName}>{user.name}</Text>
             </View>
 
+            <View style={styles.bodyContent}>
+                <View style={styles.cardContainer}>
+                    <Text style={{fontSize: 20 }}>Doenças Hereditárias</Text>
+                    <View style={{...styles.card, backgroundColor: '#20925B'}}>
+                        <Text style={styles.cardText}>Diabetes</Text>
+                    </View>
+                </View>
+
+                <View style={styles.cardContainer}>
+                    <Text style={{fontSize: 20 }}>Alergias</Text>
+                    <View style={{...styles.card, backgroundColor: '#FF8888'}}>
+                        <Text style={styles.cardText}>Frutos do Mar</Text>
+                    </View>
+                </View>
+            </View>
+
             <View style={styles.buttonExit}>
                 <Button title='Sair' onPress={logout} />
             </View>          
@@ -29,7 +45,7 @@ const Profile = ({user, logout}) => {
 
 const styles = StyleSheet.create({
     containerBg:{
-        height:'100%',
+        minHeight:'100%',
         width: '100%',
         paddingTop:StatusBar.currentHeight,
         backgroundColor: '#fff',
@@ -61,15 +77,48 @@ const styles = StyleSheet.create({
         borderColor: '#fff'
     },
     titleName: {
-        fontSize: 20,
+        fontSize: 28,
         color: '#fff',
+        maxWidth: WIDTH - 100,
+        textAlign: 'center'
+    },
+
+    bodyContent: {
+        marginTop: 150,
+        display: 'flex',
+        flexDirection: 'column', 
+        alignItems: 'center',
+        gap: 60
+    },
+
+    cardContainer:{
+        width: '100%',
+        display: 'flex',
+        alignItems: 'center',
+        gap: 20,
+    },
+
+    card: {
+        width: '80%',
+        height: 90,
+        padding: 8, 
+        borderRadius: 16, 
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center'
+    },
+
+    cardText: {
+        color: '#fff',
+        fontSize: 32
     },
 
     buttonExit: {
         position: 'absolute',
         bottom: 0,
         width: WIDTH,
-        justifyContent: 'center'
+        justifyContent: 'center',
+        height: 100
     }
 })
 
