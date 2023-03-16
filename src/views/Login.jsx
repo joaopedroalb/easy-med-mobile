@@ -11,11 +11,11 @@ const Login = ( {loginUser} ) => {
 
   const onHandleClick = async () => {
     console.log('entrei')
-    const req = await AuthService.login(userForm.email, userForm.password)
-    console.log({...req})
-    if (req.error) return false
+    const {data, error} = await AuthService.login(userForm.email, userForm.password)
 
-    loginUser(req.data)
+    if (error) return false
+
+    loginUser(data.patient)
   }
 
   return (

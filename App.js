@@ -2,24 +2,15 @@ import { StatusBar } from 'expo-status-bar';
 import { useState } from 'react';
 import { Button, StyleSheet, Text, View } from 'react-native';
 import Login from './src/views/Login';
+import Profile from './src/views/Profile';
 
 export default function App() {
   const [user, setUser] = useState(null)
-  
-
-  const Teste = () => {
-    return (
-      <View>
-        <Text>Existe um user chamado {user.name} </Text>
-        <Button title='Sair' onPress={()=>setUser(null)}/>
-      </View>
-    )
-  }
 
   return (
     <View style={styles.container}>
       {
-        user ? <Teste/> : <Login loginUser={setUser}/>
+        user ? <Profile user={user} logout={()=>setUser(null)}/> : <Login loginUser={setUser}/>
       }
     </View>
   );

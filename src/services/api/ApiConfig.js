@@ -1,9 +1,14 @@
 import axios from 'axios'
 
-export const Api = () => {
-    const baseUrl = 'http://localhost:8000/api/v1'
+import Constants from "expo-constants";
+const { manifest } = Constants;
 
+const BASE_URL = (typeof manifest.packagerOpts === `object`) && manifest.packagerOpts.dev
+  ? 'http://'+manifest.debuggerHost.split(`:`).shift().concat(`:8000/api/v1`)
+  : `http://localhost:8000/api/v1`;
+
+export const Api = () => {
     return axios.create({
-        baseURL:baseUrl,
+        baseURL:BASE_URL,
     })
 }
