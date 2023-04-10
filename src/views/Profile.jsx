@@ -1,11 +1,11 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { View, Button, Text, StyleSheet, StatusBar, Image, Dimensions } from 'react-native';
+import { UserContext } from '../context/UserContext';
 
 const WIDTH = Dimensions.get('window').width
 
-const Profile = ({user, logout}) => {
-    console.log('user')
-    console.log(user)
+const Profile = () => {
+    const {user} = useContext(UserContext)
     return (
         <View style={styles.containerBg}>
             <View style={styles.circleBlue}></View>
@@ -36,7 +36,7 @@ const Profile = ({user, logout}) => {
             </View>
 
             <View style={styles.buttonExit}>
-                <Button title='Sair' onPress={logout} />
+                <Button title='Sair' onPress={()=>console.log('logout')} />
             </View>          
             
         </View>

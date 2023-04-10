@@ -1,20 +1,35 @@
+import 'react-native-gesture-handler';
 import { StatusBar } from 'expo-status-bar';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { Button, StyleSheet, Text, View } from 'react-native';
 import Login from './src/views/Login';
 import Profile from './src/views/Profile';
+import { UserContext, UserProvider } from './src/context/UserContext';
+import { createStackNavigator } from '@react-navigation/stack';
+import { NavigationContainer } from '@react-navigation/native';
 
-export default function App() {
-  const [user, setUser] = useState(null)
+const Stack = createStackNavigator()
+
+function App() {
+  const {user} = useContext(UserContext)
 
   return (
-    <View style={styles.container}>
-      {
-        user ? <Profile user={user} logout={()=>setUser(null)}/> : <Login loginUser={setUser}/>
-      }
-    </View>
+    <NavigationContainer>
+        <Stack.Navigator screenOptions={{headerShown: false}}>
+          { user
+            ? <Stack.Screen name='Profile' component={Profile} />
+            : <Stack.Screen name='Login' component={Login} />
+          }
+        </Stack.Navigator>
+    </NavigationContainer>
   );
 }
+
+export default () => (
+  <UserProvider>
+    <App/>
+  </UserProvider>
+)
 
 const styles = StyleSheet.create({
   container: {

@@ -1,25 +1,37 @@
 import { LinearGradient } from 'expo-linear-gradient';
-import React, { useState } from 'react';
-import { View, Text, TextInput, StyleSheet, SafeAreaView, Button, StatusBar, Pressable } from 'react-native';
+import React, { useContext, useState } from 'react';
+import { View, Text, TextInput, StyleSheet, Button, StatusBar, Pressable } from 'react-native';
 import { AuthService } from '../services/auth/AuthService';
+import { UserContext } from '../context/UserContext';
 
-const Login = ( {loginUser} ) => {
+const Login = () => {
+  const {userLogin} = useContext(UserContext)
+
   const [userForm, setUserForm] = useState({
     email: '',
     password: ''
   })
 
   const onHandleClick = async () => {
-    console.log('entrei')
     const {data, error} = await AuthService.login(userForm.email, userForm.password)
+    
+    if (error) 
+      return false
 
-    if (error) return false
+    const userLogged = {
+      id: data.user.id,
+      name: data.user.name,
+      email: data.user.email,
+      isDoctor:data.role, 
+      profilePicture:data.user.profilePicture,
+      cpf: data.user.cpf
+    }
 
-    loginUser(data.patient)
+    userLogin(userLogged)
   }
 
   return (
-    <SafeAreaView style={styles.containerBg}>
+    <View style={styles.containerBg}>
       <LinearGradient  
         colors={['#0080DD', '#2EA1']} 
         locations={[-2.76, 68.09]}
@@ -46,7 +58,7 @@ const Login = ( {loginUser} ) => {
               </Pressable>    
         </View>
       </LinearGradient>
-    </SafeAreaView>
+    </View>
   )
 }
 

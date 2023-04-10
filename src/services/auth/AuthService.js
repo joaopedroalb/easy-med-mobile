@@ -3,11 +3,6 @@ import { ApiException } from "../api/ApiExpection"
 
 const login = async (email, password) => {
     try {
-        console.log('a data é ')
-        console.log({
-            email:email,
-            password:password
-        })
         const {data} = await Api().post('/auth/login',{
             email:email,
             password:password
@@ -15,8 +10,6 @@ const login = async (email, password) => {
 
         return {data: data, error:false}
     } catch(err) {
-        console.log('to no error')
-        console.log({...err})
         return new ApiException(err.message || 'Erro na tentativa de login.')
     }
 }
