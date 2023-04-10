@@ -7,6 +7,7 @@ import Profile from './src/views/Profile';
 import { UserContext, UserProvider } from './src/context/UserContext';
 import { createStackNavigator } from '@react-navigation/stack';
 import { NavigationContainer } from '@react-navigation/native';
+import Home from './src/views/Home';
 
 const Stack = createStackNavigator()
 
@@ -17,7 +18,7 @@ function App() {
     <NavigationContainer>
         <Stack.Navigator screenOptions={{headerShown: false}}>
           { user
-            ? <Stack.Screen name='Profile' component={Profile} />
+            ? <Stack.Screen name='Home' component={Home} />
             : <Stack.Screen name='Login' component={Login} />
           }
         </Stack.Navigator>
