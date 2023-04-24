@@ -1,37 +1,58 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import {
   View,
   TouchableOpacity,
   StyleSheet,
-  Text
+  Text, 
+  Image
 } from 'react-native'
 import {
   DrawerContentScrollView,
   DrawerItem
 } from '@react-navigation/drawer'
+import { UserContext } from '../context/UserContext'
 
 
 const DrawerContent = props => {
+
+  const { userLogout, user } = useContext(UserContext)
   const { state, tabs } = props
   const { routes, index } = state
   const focusedRoute = routes[index].name
 
-  const [showLogoutModal, setShowLogoutModal] = useState(false)
   const logout = () => {
-    console.log('logout')
+    userLogout()
   }
+
+  const ProfileDrawer = () => {
+    return (
+      <TouchableOpacity style={styles.profileContainer} onPress={() => {
+        props.navigation.navigate('PROFILE')
+      }}>
+        <Image 
+            style={styles.profileImage}
+            source={{
+                uri: user.profilePicture,
+            }}
+        />
+        <View>
+          <Text style={styles.nameProfile}>{user.name}</Text>
+          <Text style={styles.titleProfile}>Meu Perfil</Text>
+        </View>
+      </TouchableOpacity>
+    )
+  }
+
+
   return (
     <View style={{ flex: 1, backgroundColor: 'transparent', paddingHorizontal: 25, paddingVertical: 38 }}>
       <DrawerContentScrollView
         {...props}
       >
-        <View style={{ marginTop: 44, marginBottom: 58, flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-start', paddingHorizontal: 20 }} >
-          <Text style={styles.title} weight='bold'>EasyMed</Text>
-          
-        </View>
+        <ProfileDrawer/>
         <View>
           {
-            tabs.map(tab => {
+            tabs.filter(x=>x.alwaysShow).map(tab => {
               return (
                 <DrawerItem
                   key={tab.key}
@@ -48,9 +69,9 @@ const DrawerContent = props => {
 
         </View>
       </DrawerContentScrollView>
-      <View>
-        <TouchableOpacity onPress={() => setShowLogoutModal(true)} style={{ paddingVertical: 15, paddingHorizontal: 10 }}>
-          {/* <LogoutButton /> */}
+      <View style={styles.logoutContainer}>
+        <TouchableOpacity onPress={logout} style={{ paddingVertical: 15, paddingHorizontal: 10 }}>
+          <Text style={styles.logoutLabel}>Sair</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -61,6 +82,30 @@ const DrawerContent = props => {
 export default DrawerContent
 
 const styles = StyleSheet.create({
+  profileContainer: {
+    flexDirection: 'row', 
+    alignItems: 'center', 
+    justifyContent: 'flex-start', 
+    marginTop: 10,
+    marginBottom: 30,
+    gap: 15
+  },
+  nameProfile: {
+    color: '#514D4D',
+    fontSize: 16
+  },
+  titleProfile: {
+    color: '#000',
+    fontSize: 18,
+    fontWeight: 'bold'
+  },
+  profileImage: {
+    width: 60,
+    height: 60,
+    borderRadius:100,
+    borderWidth: 4,
+    borderColor: '#5B84ED'
+  },
   title: {
     color: '#000',
     fontSize: 40,
@@ -81,5 +126,14 @@ const styles = StyleSheet.create({
   },
   labelActive: {
     color: '#000'
+  },
+  logoutContainer: {
+    backgroundColor: '#f73a3a',
+    borderRadius: 8,
+  },
+  logoutLabel: {
+    fontSize: 18,
+    color: '#fff',
+    fontWeight: 'bold'
   }
 })

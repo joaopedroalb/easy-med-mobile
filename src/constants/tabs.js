@@ -7,7 +7,7 @@ const tabs = {
       key: 'PROFILE',
       icon: 'user-circle',
       component: Profile,
-      alwaysShow: true,
+      alwaysShow: false,
       label: 'Meu Perfil'
     },
 
@@ -24,7 +24,7 @@ const tabs = {
       icon: 'user-circle',
       component: AppointmentHistory,
       alwaysShow: true,
-      label: 'Histórico de Consultas'
+      label: 'Minhas Consultas'
     }
   }
   
