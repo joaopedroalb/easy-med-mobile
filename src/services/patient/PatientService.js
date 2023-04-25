@@ -1,5 +1,5 @@
 import {Api} from '../api/ApiConfig'
-import {ApiException, ApiExpection} from '../api/ApiExpection'
+import {ApiException} from '../api/ApiExpection'
 
 const create = async (newPatient) => {
    try{
@@ -31,6 +31,24 @@ const getDoctorById = async (doctorId) => {
         return {data: data, error:false} 
     } catch {
         return new ApiException(err.message || 'Erro ao buscar doutor.')
+    }
+}
+
+const getDoctorList = async () => {
+    try {
+        const { data } = await Api().get(`/doctors`) 
+        return {data: data, error: false}
+    } catch (error) {
+        return new ApiException(error.message || 'Erro ao buscar lista de medicos')
+    }
+}
+
+const getSpecialties = async () => {
+    try {
+        const { data } = await Api().get(`/doctors/specialties`) 
+        return {data: data, error: false}
+    } catch (error) {
+        return new ApiException(error.message || 'Erro ao buscar lista de especialidades')
     }
 }
 
@@ -195,5 +213,7 @@ export const PatientService = {
     getAppointmentsByPatientId,
     getExamsByPatientId,
     getExamByAppointmentId,
-    getAppointmentHistory
+    getAppointmentHistory, 
+    getDoctorList, 
+    getSpecialties
 }
