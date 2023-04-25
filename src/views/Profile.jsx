@@ -1,9 +1,11 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
-import { View, Text, StyleSheet, StatusBar, Image, Dimensions, ScrollView, PanResponder } from 'react-native';
+import { View, Text, StyleSheet, StatusBar, Image, Dimensions } from 'react-native';
 import { UserContext } from '../context/UserContext';
 import { PatientService } from '../services/patient/PatientService';
 import CardCarousel from '../components/CardCarousel';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
+import HeaderCircleBlue from '../components/HeaderCircleBlue';
+import Loading from '../components/Loading';
 
 
 const WIDTH = Dimensions.get('window').width
@@ -43,47 +45,57 @@ const Profile = () => {
         getUserData()
     },[])
 
-    return (
-        <View style={styles.containerBg}>
-            <View style={styles.circleBlue}></View>
-            <View style={styles.headerContainer}>
-                <Image 
-                    style={styles.profileImage}
-                    source={{
-                        uri: user.profilePicture,
-                    }}
-                />
-                <Text style={styles.titleName}>{user.name}</Text>
+    const EmptyState = () => {
+        return (
+            <View style={styles.emptyContainer}>
+                 <FontAwesome5 name={'frown-open'} size={100} style={styles.iconDataEmpty}/>
+                 <Text style={styles.textWarningEmpty}>Você não tem nenhuma informação adicionada</Text>
             </View>
+        )
+    }
 
-          {
-            !loading && (
-                <View style={styles.bodyContent}>
-                    <View style={styles.cardContainer}>
-                        <Text style={{fontSize: 20 }}>Doenças</Text>
-                        <CardCarousel 
-                                cardsArray={userData.conditions.map(card=>{
-                                        return (
-                                            <View style={{...styles.card, backgroundColor: '#20925B'}} key={card.name}>
-                                                <FontAwesome5 name={'disease'} size={40} style={styles.icon}/>
-                                                <Text style={styles.cardText} numberOfLines={1} ellipsizeMode='tail'>
-                                                    {card.name} 
-                                                </Text>
-                                            </View>
-                                        )
-                                    })
-                                }
-                                carouselSettings={{
-                                    loop:false, 
-                                    width: WIDTH, 
-                                    scrollAnimationDuration: 1000,
-                                    mode:'parallax', 
-                                    height:'140'
-                                }}
-                            />
-                    </View>
+    const RenderCards = () => {
+        if (loading)
+            return <Loading/>
+        
+        const conditionsHasData = !!userData.conditions && !!userData.conditions.length > 0
+        const allergiesHasData = !!userData.allergies && !!userData.allergies.length > 0
 
-                    <View style={styles.cardContainer}>
+        if (!conditionsHasData && !allergiesHasData)
+            return <EmptyState />
+
+        return (
+            <>
+                {
+                    conditionsHasData && (
+                        <View style={styles.cardContainer}>
+                            <Text style={{fontSize: 20 }}>Doenças</Text>
+                            <CardCarousel 
+                                    cardsArray={userData.conditions.map(card=>{
+                                            return (
+                                                <View style={{...styles.card, backgroundColor: '#20925B'}} key={card.name}>
+                                                    <FontAwesome5 name={'disease'} size={40} style={styles.icon}/>
+                                                    <Text style={styles.cardText} numberOfLines={1} ellipsizeMode='tail'>
+                                                        {card.name} 
+                                                    </Text>
+                                                </View>
+                                            )
+                                        })
+                                    }
+                                    carouselSettings={{
+                                        loop:false, 
+                                        width: WIDTH, 
+                                        scrollAnimationDuration: 1000,
+                                        mode:'parallax', 
+                                        height:'140'
+                                    }}
+                                />
+                        </View>
+                    )
+                }
+                {
+                    allergiesHasData && (
+                        <View style={styles.cardContainer}>
                         <Text style={{fontSize: 20 }}>Alergias</Text>
                         {
                             <CardCarousel 
@@ -107,10 +119,30 @@ const Profile = () => {
                                 }}
                             />
                         }
-                    </View>
-                </View>
-            )
-          }         
+                        </View>
+                    )
+                }
+                
+            </>
+        )
+    }
+
+    return (
+        <View style={styles.containerBg}>
+            <HeaderCircleBlue height={540}/>
+            <View style={styles.headerContainer}>
+                <Image 
+                    style={styles.profileImage}
+                    source={{
+                        uri: user.profilePicture,
+                    }}
+                />
+                <Text style={styles.titleName}>{user.name}</Text>
+            </View>
+
+            <View style={styles.bodyContent}>
+                <RenderCards/>
+            </View>       
             
         </View>
     )
@@ -123,17 +155,6 @@ const styles = StyleSheet.create({
         paddingTop:StatusBar.currentHeight,
         backgroundColor: '#fff',
         position: 'relative'
-    },
-    circleBlue:{
-        backgroundColor: '#5B84ED',
-        minHeight: 560,
-        minWidth: WIDTH + 100,
-        top: 0,
-        position: 'absolute',
-        borderRadius: 500,
-        top: -210,
-        left: -50,
-        flex: 2
     },
     headerContainer:{
         display: 'flex',
@@ -155,7 +176,6 @@ const styles = StyleSheet.create({
         maxWidth: WIDTH - 100,
         textAlign: 'center'
     },
-
     bodyContent: {
         marginTop: 150,
         display: 'flex',
@@ -163,13 +183,26 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         gap: 32
     },
-
     cardContainer:{
         width: '100%',
         display: 'flex',
         alignItems: 'center',
     },
-
+    emptyContainer:{
+        width: '100%',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: 20
+    },
+    iconDataEmpty:{
+        color: '#514d4dc3'
+    },
+    textWarningEmpty: {
+        color: '#514d4dc3',
+        fontSize: 26,
+        textAlign: 'center'
+    },
     icon:{
         position:'absolute',
         left: 40,

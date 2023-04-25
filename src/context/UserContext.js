@@ -19,9 +19,8 @@ export const UserProvider = ({children}) =>{
         return user.isDoctor
     }
 
-    const userLogout = () => {r
+    const userLogout = () => {
         setUser(null)
-    
     }
 
     const userAuth = useCallback(async () => {

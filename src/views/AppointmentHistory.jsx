@@ -3,6 +3,8 @@ import { UserContext } from '../context/UserContext';
 import { PatientService } from '../services/patient/PatientService';
 import { StyleSheet, Text, View, Dimensions, ScrollView } from 'react-native';
 import AppointmentCard from '../components/AppointmentCard';
+import HeaderCircleBlue from '../components/HeaderCircleBlue';
+import Loading from '../components/Loading';
 
 const WIDTH = Dimensions.get('window').width;
 
@@ -14,14 +16,15 @@ const AppointmentHistory = () => {
   const [appointments, setAppointments] = useState([]);
 
   const fetchPatientAppointments = async () => {
-    const fetchResult = await PatientService.getAppointmentsByPatientId(
-      user.id
-    );
+    const fetchResult = await PatientService.getAppointmentsByPatientId(user.id)
 
-    fetchResult instanceof Error
-      ? setError(fetchResult.message)
-      : setAppointments(fetchResult.data);
+    if (fetchResult.error) {
+      setError(fetchResult.data)
+      setLoading(false)
+      return 
+    }
 
+    setAppointments(fetchResult.data)
     setLoading(false);
   };
 
@@ -36,32 +39,36 @@ const AppointmentHistory = () => {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <View style={styles.circleBlue}></View>
+      <HeaderCircleBlue height={540} top={-350}/>
       <View style={styles.headerContainer}>
         <Text style={styles.titleName}>Histórico de Consultas</Text>
       </View>
+      {loading && <Loading/>}
       {error && (
         <View style={styles.errorContainer}>
           <Text style={styles.errorText}>{`Ocorreu um erro: ${error}`}</Text>
         </View>
       )}
-      {!loading &&
-        !error &&
-        appointments.map((appointment) => (
-          <AppointmentCard
-            key={appointment.id}
-            tags={appointment.exams.map((exam) => exam.examType)}
-            date={`Consulta feita em ${formatDate(appointment.date)}`}
-            buttonText={'Mais informações'}
-          >
-            <View style={styles.cardContent}>
-              <Text style={styles.cardDescription}>
-                Exame feito pelo médico(a):
-              </Text>
-              <Text style={styles.cardValue}>{appointment.doctor.name}</Text>
-            </View>
-          </AppointmentCard>
-        ))}
+      {
+        appointments !== undefined && appointments.map(appointment => {
+          return (
+            <AppointmentCard
+              key={appointment.id}
+              tags={appointment.exam ? appointment.exams.map((exam) => exam.examType) : []}
+              date={`Consulta feita em ${formatDate(appointment.date)}`}
+              buttonText={'Mais informações'}
+            >
+              <View style={styles.cardContent}>
+                <Text style={styles.cardDescription}>
+                  Exame feito pelo médico(a):
+                </Text>
+                <Text style={styles.cardValue}>{appointment.doctor.name}</Text>
+              </View>
+            </AppointmentCard>
+          )
+        })
+      }
+      
     </ScrollView>
   );
 };
@@ -69,21 +76,9 @@ const AppointmentHistory = () => {
 export default AppointmentHistory;
 
 const styles = StyleSheet.create({
-  circleBlue: {
-    backgroundColor: '#5B84ED',
-    minHeight: 540,
-    minWidth: WIDTH + 100,
-    top: 0,
-    position: 'absolute',
-    borderRadius: 500,
-    top: -350,
-    left: -50,
-    flex: 2,
-    zIndex: 1,
-  },
   headerContainer: {
     marginTop: 40,
-    marginBottom: 60,
+    marginBottom: 80,
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
