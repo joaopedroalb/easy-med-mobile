@@ -31,7 +31,8 @@ const Home = ({ navigation }) => {
                 headerTransparent: true,
                 headerVisible: false,
                 headerTitleStyle: {display: 'none'},
-                headerTintColor: '#fff'
+                headerTintColor: '#fff',
+                
             })}
         >
             {getTabs().map(tab =>

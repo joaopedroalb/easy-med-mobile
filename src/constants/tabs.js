@@ -1,5 +1,5 @@
 import AppointmentHistory from "../views/AppointmentHistory"
-import DoctorProfile from "../views/DoctorProfile"
+import DoctorProfile from "../views/DoctorProfile/DoctorProfile"
 import ListDoctors from "../views/ListDoctors/ListDoctors"
 import Medication from "../views/Medication"
 import Profile from "../views/Profile"
