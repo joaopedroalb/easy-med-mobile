@@ -101,11 +101,8 @@ const DoctorProfile = ({route}) => {
         
         const currentDate = new Date()
         
-        console.log(currentDate)
-
         const filterList = data.filter(appoint=> new Date(appoint.date) > currentDate && appoint.doctorId === doctorId)
 
-        console.log(filterList)
         if (filterList.length <= 0)
             return 
         
