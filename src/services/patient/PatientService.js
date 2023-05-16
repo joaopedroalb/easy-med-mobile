@@ -203,6 +203,49 @@ const getAppointmentHistory = async (idPatient) => {
     }
 }
 
+const createRatingDoctorByPatient = async (idPatient, idDoctor, rating) => {
+    try {
+        const { data } = await Api().post(`/patients/${idPatient}/doctors/${idDoctor}/ratings`, {
+            rating: rating
+        })
+
+        return {data: data, error: false}
+    } catch (err) {
+        return new ApiException(err.message || 'Falha ao avaliar medico')
+    }
+}
+
+const getRatingDoctorByPatient = async (idPatient, idDoctor) => {
+    try {
+        const {data} = await Api().get(`/patients/${idPatient}/doctors/${idDoctor}/ratings`)
+        return {data: data, error:false}
+    } catch (err) {
+        return new ApiException(err.message || 'Não existe avaliacao entre eles')
+    }
+}
+
+const getValidatePatientValidateDoctor = async (idPatient, idDoctor) => {
+    try {
+        const { data, error } = await getAppointmentsByPatientId(idPatient)
+
+        if (error) 
+            return false
+
+        const CURRENT_DATE = new Date()
+        
+        for(let i = 0; i < data.length; i++) {
+            const CURRENT_APPOINTMENT = data[i]
+            const APPOINTMENT_DATE = new Date(CURRENT_APPOINTMENT.date)
+
+            if(CURRENT_APPOINTMENT.doctor.id === idDoctor && APPOINTMENT_DATE < CURRENT_DATE )
+                return true
+        }
+        return false
+    } catch (err) {
+        return false
+    }
+}
+
 export const PatientService = {
     create,
     getById,
@@ -215,5 +258,8 @@ export const PatientService = {
     getExamByAppointmentId,
     getAppointmentHistory, 
     getDoctorList, 
-    getSpecialties
+    getSpecialties,
+    getRatingDoctorByPatient,
+    getValidatePatientValidateDoctor,
+    createRatingDoctorByPatient
 }

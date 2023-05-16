@@ -76,6 +76,11 @@ const ListDoctors = ({ navigation }) => {
     const handleNavigateByDoctor = (doctor) => {
         navigation.navigate('DOCTOR_PROFILE', {
             doctorId: doctor.id,
+            doctorName: doctor.name,
+            description: doctor.description,
+            insurance: doctor.insurance,
+            specialty: specialties.filter(x=>x.id === doctor.specialtyId)[0] || null,
+            photo: doctor.profilePicture || 'https://thumbs.dreamstime.com/b/default-placeholder-doctor-half-length-portrait-default-placeholder-doctor-half-length-portrait-photo-avatar-gray-color-116470452.jpg'
         });
     }
 
@@ -87,7 +92,7 @@ const ListDoctors = ({ navigation }) => {
         return (
             <View style={styles.emptyContainer}>
                  <FontAwesome5 name={'frown-open'} size={100} style={styles.iconDataEmpty}/>
-                 <Text style={styles.textWarningEmpty}>Nenhum Medico foi encontrado no momento</Text>
+                 <Text style={styles.textWarningEmpty}>Nenhum Médico foi encontrado no momento</Text>
             </View>
         )
     }

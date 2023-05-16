@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
-import { View, Text, StyleSheet, StatusBar, Image, Dimensions } from 'react-native';
+import { View, Text, StyleSheet, StatusBar, Image, Dimensions, TouchableOpacity, Modal, TouchableWithoutFeedback  } from 'react-native';
 import { UserContext } from '../context/UserContext';
 import { PatientService } from '../services/patient/PatientService';
 import CardCarousel from '../components/CardCarousel';
@@ -10,6 +10,13 @@ import Loading from '../components/Loading';
 
 const WIDTH = Dimensions.get('window').width
 
+const MODAL_DEFAULT_VALUE = {
+    active:false,
+    type: '',
+    name: '',
+    description: ''
+}
+
 const Profile = () => {
     const {user} = useContext(UserContext)
     
@@ -19,6 +26,20 @@ const Profile = () => {
         allergies: []
     })
     const [loading, setLoading] = useState(true)
+    const [modalItem, setModalItem] = useState(MODAL_DEFAULT_VALUE)
+
+    const setModalValue = (type, name, description) => {
+        setModalItem({
+            active:true,
+            type: type,
+            name: name,
+            description: description
+        })
+    }
+
+    const closeModal = () => {
+        setModalItem(MODAL_DEFAULT_VALUE)
+    }
 
 
     const getUserData = async () => {
@@ -33,7 +54,6 @@ const Profile = () => {
                 userDataAux.allergies = allergiesReq.data
     
             setUserData(userDataAux)
-
         } catch (err) {
             console.log(err)
         } finally { 
@@ -73,12 +93,17 @@ const Profile = () => {
                             <CardCarousel 
                                     cardsArray={userData.conditions.map(card=>{
                                             return (
-                                                <View style={{...styles.card, backgroundColor: '#20925B'}} key={card.name}>
-                                                    <FontAwesome5 name={'disease'} size={40} style={styles.icon}/>
+                                                <TouchableOpacity 
+                                                    style={{...styles.cardScrollView, backgroundColor: '#20925B'}} 
+                                                    key={card.name} 
+                                                    activeOpacity={.7}
+                                                    onPress={()=>setModalValue('Doença',card.name, card.description)}
+                                                >
+                                                    <FontAwesome5 name={'disease'} size={30} style={styles.iconScrollView}/>
                                                     <Text style={styles.cardText} numberOfLines={1} ellipsizeMode='tail'>
                                                         {card.name} 
                                                     </Text>
-                                                </View>
+                                                </TouchableOpacity>
                                             )
                                         })
                                     }
@@ -101,12 +126,17 @@ const Profile = () => {
                             <CardCarousel 
                                 cardsArray={userData.allergies.map(card=>{
                                         return (
-                                            <View style={{...styles.cardScrollView, backgroundColor: '#FF8888'}} key={card.name}>
+                                            <TouchableOpacity 
+                                                style={{...styles.cardScrollView, backgroundColor: '#FF8888'}} 
+                                                key={card.name} 
+                                                activeOpacity={.7}
+                                                onPress={()=>setModalValue('Alergia',card.name, card.symptons)}
+                                            >
                                                 <FontAwesome5 name={'allergies'} size={30} style={styles.iconScrollView}/>
                                                 <Text style={styles.cardText} numberOfLines={1} ellipsizeMode='tail'>
                                                     {card.name} 
                                                 </Text>
-                                            </View>
+                                            </TouchableOpacity>
                                         )
                                     })
                                 }
@@ -143,6 +173,24 @@ const Profile = () => {
             <View style={styles.bodyContent}>
                 <RenderCards/>
             </View>       
+
+            <Modal
+                transparent={true}
+                visible={modalItem.active}
+                onRequestClose={closeModal}
+            >
+                <TouchableWithoutFeedback onPress={closeModal}>
+                    <View  style={styles.modalContainer}>
+                        <TouchableWithoutFeedback onPress={()=>{}}>
+                            <View style={{...styles.modalContent, backgroundColor: modalItem.type === 'Doença' ? '#20925B':'#FF8888' }}>
+                                <Text style={styles.modalTextTitle}>{modalItem.name}</Text>
+                                <Text style={styles.modalText}>{modalItem.description}</Text>
+                            </View>
+                        </TouchableWithoutFeedback>
+                    </View>
+                </TouchableWithoutFeedback>
+            </Modal>
+            
             
         </View>
     )
@@ -205,7 +253,7 @@ const styles = StyleSheet.create({
     },
     icon:{
         position:'absolute',
-        left: 40,
+        left: 20,
         color: '#fff',
         marginRight: 8
     },
@@ -224,7 +272,7 @@ const styles = StyleSheet.create({
         borderRadius: 16, 
         display: 'flex',
         alignItems: 'center',
-        justifyContent: 'center'
+        justifyContent: 'center',
     },
 
     cardScrollView: {
@@ -241,7 +289,8 @@ const styles = StyleSheet.create({
         color: '#fff',
         fontSize: 40,
         maxWidth: '80%',
-        overflow: 'hidden'
+        overflow: 'hidden',
+        flexShrink: 1 
     },
 
     buttonExit: {
@@ -259,6 +308,31 @@ const styles = StyleSheet.create({
         gap: 16,
         height: 200
     },
+
+    modalContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+      },
+      modalContent: {
+        backgroundColor: 'white',
+        padding: 20,
+        borderRadius: 8,
+        alignItems: 'center',
+        margin: 15, 
+        minWidth: '75%'
+      },
+      modalTextTitle: {
+        color: '#fff',
+        fontSize: 32,
+        marginBottom: 10,
+      },
+      modalText: {
+        color: '#fff',
+        fontSize: 18,
+        marginBottom: 10,
+      },
 })
 
 export default Profile;
