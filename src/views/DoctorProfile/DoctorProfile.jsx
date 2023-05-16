@@ -23,6 +23,8 @@ const DoctorProfile = ({route}) => {
     const [appointmentAvailable, setAppointmentAvailable] = useState([])
     const [currentAppointment, setCurrentAppointment] = useState(null)
     const [rating, setRating] = useState(-1)
+    const [disableViewRate, setDisableViewRate] = useState(true)
+    const [patientRated, setPatientRated] = useState(null)
 
     const getAppointmentDateParams = () => {
         let datesAppointment = []
@@ -89,7 +91,7 @@ const DoctorProfile = ({route}) => {
         if (data._avg.rating === null || data._count.rating === null)
             return 
         
-        setRating(data._count.rating)
+        setRating(data._avg.rating)
         
     }
 
@@ -115,10 +117,27 @@ const DoctorProfile = ({route}) => {
         setCurrentAppointment({date: {day, month }, time})
     }
 
+    const setViewOptionByAppoint = async () => {
+        const VALIDATE_RATE = await PatientService.getValidatePatientValidateDoctor(user.id, doctorId)
+
+        setDisableViewRate(!VALIDATE_RATE)
+    }
+
+    const setDoctorRateByPatient = async () => {
+        const {data, error} = await PatientService.getRatingDoctorByPatient(user.id, doctorId)
+
+        if (error)
+            return 
+
+        setPatientRated(data.rating)
+    }
+
     const getData = async () => {
         await getAppointment()
         await getRating()
         await getAppointmentPatient()
+        await setViewOptionByAppoint()
+        await setDoctorRateByPatient()
         setLoading(false)
     }
 
@@ -133,6 +152,16 @@ const DoctorProfile = ({route}) => {
 
         setCurrentAppointment({date:{day: date.day, month: date.month}, time})
     }   
+
+    const createRating = async (rating) => {
+        const {data, error} = await PatientService.createRatingDoctorByPatient(user.id, doctorId, rating)
+
+        if (error)
+            return 
+
+        setPatientRated(rating)
+        setRating(rating)
+    }
 
     useEffect(()=>{
         getData()
@@ -151,7 +180,7 @@ const DoctorProfile = ({route}) => {
                     <Text style={{textAlign: 'center', fontSize: 16}}>{description}</Text>
                 </View>
                 <CreateAppointment appointmentList={appointmentAvailable} currentAppointment={currentAppointment} handleCreate={createAppointment}/>
-                <RateDoctor />
+                <RateDoctor disable={disableViewRate} patientRate={patientRated} createRate={createRating}/>
             </>
         )
     }

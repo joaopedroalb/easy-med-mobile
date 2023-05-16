@@ -2,8 +2,27 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet,Pressable } from 'react-native';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
 
-const RateDoctor = () => {
+const RateDoctor = ({disable = false, patientRate = null, createRate}) => {
     const [rating, setRating] = useState(5)
+
+    if (!!patientRate)
+        return (
+            <View style={styles.container}>
+                <Text style={styles.infoText}>Você avaliou esse médico com </Text>
+                <View style={styles.ratingContent}>
+                    {
+                        [1,2,3,4,5].map(value=>{
+                            return (
+                                <FontAwesome5 name={'star'} size={50} solid style={value<=patientRate ? styles.active : styles.disable} key={value}/>
+                            )
+                        })
+                    }
+                </View>
+            </View>
+        )
+
+    if (disable)
+        return null
 
     return (
         <View style={styles.container}>
@@ -17,7 +36,7 @@ const RateDoctor = () => {
                 })
             }
             </View>
-            <Pressable style={styles.btnContainer}>
+            <Pressable style={styles.btnContainer} onPress={()=>createRate(rating)}>
                 <Text style={{fontSize: 26, color: '#fff'}}>Avaliar</Text>
             </Pressable>
         </View>
@@ -25,7 +44,7 @@ const RateDoctor = () => {
 }
 
 const styles = StyleSheet.create({
-    container:{
+     container:{
         width: '90%',
         display: 'flex',
         flexDirection: 'column',

@@ -26,7 +26,7 @@ const tabs = {
       icon: 'user-circle',
       component: AppointmentHistory,
       alwaysShow: true,
-      label: 'Minhas Consultas'
+      label: 'Histórico de consultas'
     }, 
 
     DOCTORS: {

@@ -79,7 +79,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         flexWrap: 'wrap',
         alignItems: 'flex-start',
-        justifyContent: 'center',
+        justifyContent: 'space-between',
         gap: 18
     },
     option:{
