@@ -1,10 +1,11 @@
 import { useContext, useEffect, useState } from 'react';
-import { UserContext } from '../context/UserContext';
-import { PatientService } from '../services/patient/PatientService';
+import { UserContext } from '../../context/UserContext';
+import { PatientService } from '../../services/patient/PatientService';
 import { StyleSheet, Text, View, Dimensions, ScrollView } from 'react-native';
-import AppointmentCard from '../components/AppointmentCard';
-import HeaderCircleBlue from '../components/HeaderCircleBlue';
-import Loading from '../components/Loading';
+import AppointmentCard from './components/AppointmentCard';
+import HeaderCircleBlue from '../../components/HeaderCircleBlue';
+import Loading from '../../components/Loading';
+import DetailsModal from './components/DetailsModal';
 
 const WIDTH = Dimensions.get('window').width;
 
@@ -14,23 +15,31 @@ const AppointmentHistory = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [appointments, setAppointments] = useState([]);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedAppointment, setSelectedAppointment] = useState(null);
 
-  const fetchPatientAppointments = async () => {
-    const fetchResult = await PatientService.getAppointmentsByPatientId(user.id)
-
-    if (fetchResult.error) {
-      setError(fetchResult.data)
-      setLoading(false)
-      return 
-    }
-
-    setAppointments(fetchResult.data)
-    setLoading(false);
+  const handleAppointmentClick = (appointment) => {
+    setSelectedAppointment(appointment);
+    setModalVisible(true);
   };
 
-  const formatDate = (ISODate) => {
-    const date = new Date(ISODate);
-    return date.toLocaleDateString('pt-BR');
+  const handleCloseModal = () => {
+    setModalVisible(false);
+  };
+
+  const fetchPatientAppointments = async () => {
+    const fetchResult = await PatientService.getAppointmentsByPatientId(
+      user.id
+    );
+
+    if (fetchResult.error) {
+      setError(fetchResult.data);
+      setLoading(false);
+      return;
+    }
+
+    setAppointments(fetchResult.data);
+    setLoading(false);
   };
 
   useEffect(() => {
@@ -39,41 +48,36 @@ const AppointmentHistory = () => {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <HeaderCircleBlue height={540} top={-350}/>
+      <HeaderCircleBlue height={540} top={-350} />
       <View style={styles.headerContainer}>
         <Text style={styles.titleName}>Histórico de Consultas</Text>
       </View>
-      {loading && <Loading/>}
+      {loading && <Loading />}
       {error && (
         <View style={styles.errorContainer}>
           <Text style={styles.errorText}>{`Ocorreu um erro: ${error}`}</Text>
         </View>
       )}
-      {
-        appointments !== undefined && appointments.map(appointment => {
+      {!!appointments.length &&
+        appointments.map((appointment) => {
           return (
             <AppointmentCard
               key={appointment.id}
-              tags={appointment.exam ? appointment.exams.map((exam) => exam.examType) : []}
-              date={`Consulta feita em ${formatDate(appointment.date)}`}
-              buttonText={'Mais informações'}
-            >
-              <View style={styles.cardContent}>
-                <Text style={styles.cardDescription}>
-                  Exame feito pelo médico(a):
-                </Text>
-                <Text style={styles.cardValue}>{appointment.doctor.name}</Text>
-              </View>
-            </AppointmentCard>
-          )
-        })
-      }
-      
+              appointment={appointment}
+              onButtonClick={() => handleAppointmentClick(appointment)}
+            />
+          );
+        })}
+      {selectedAppointment && (
+        <DetailsModal
+          visible={modalVisible}
+          appointment={selectedAppointment}
+          onClose={handleCloseModal}
+        />
+      )}
     </ScrollView>
   );
 };
-
-export default AppointmentHistory;
 
 const styles = StyleSheet.create({
   headerContainer: {
@@ -95,19 +99,6 @@ const styles = StyleSheet.create({
   container: {
     padding: 16,
   },
-  cardContent: {
-    padding: 10,
-  },
-  cardDescription: {
-    color: '#fff',
-    fontSize: 16,
-  },
-  cardValue: {
-    color: '#fff',
-    fontWeight: 'bold',
-    fontSize: 18,
-    marginVertical: 10,
-  },
   errorContainer: {
     backgroundColor: '#FF5E5E',
     flexDirection: 'row',
@@ -120,3 +111,5 @@ const styles = StyleSheet.create({
   },
   errorText: { color: 'white' },
 });
+
+export default AppointmentHistory;
