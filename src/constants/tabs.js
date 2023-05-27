@@ -1,4 +1,5 @@
 import AppointmentHistory from "../views/AppointmentHistory"
+import AppointmentList from "../views/AppointmentList"
 import DoctorProfile from "../views/DoctorProfile/DoctorProfile"
 import ListDoctors from "../views/ListDoctors/ListDoctors"
 import Medication from "../views/Medication"
@@ -37,13 +38,21 @@ const tabs = {
       label: 'Medicos'
     }, 
 
+    APPOINTMENTS_LIST: {
+      key: 'APPOINTMENTS_LIST',
+      icon: '',
+      component: AppointmentList,
+      alwaysShow: true,
+      label: 'Minhas Consultas'
+    },
+
     DOCTOR_PROFILE: {
       key: 'DOCTOR_PROFILE',
       icon: 'user-circle',
       component: DoctorProfile,
       alwaysShow: false,
       label: ''
-    }
+    },
   }
   
   export default tabs
