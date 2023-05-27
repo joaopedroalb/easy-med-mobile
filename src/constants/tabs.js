@@ -1,4 +1,4 @@
-import AppointmentHistory from "../views/AppointmentHistory"
+import AppointmentHistory from "../views/AppointmentHistory/AppointmentHistory"
 import AppointmentList from "../views/AppointmentList"
 import DoctorProfile from "../views/DoctorProfile/DoctorProfile"
 import ListDoctors from "../views/ListDoctors/ListDoctors"

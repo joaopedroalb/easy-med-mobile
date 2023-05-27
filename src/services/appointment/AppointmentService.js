@@ -10,6 +10,15 @@ const getAvailableAppointment = async (doctorId, startDate, endDate) => {
     }
 }
 
+const getAppointmentExams = async (appointmentId) => {
+  try {
+    const { data } = await Api().get(`/appointments/${appointmentId}/exams`);
+    return { data, error: false };
+  } catch (err) {
+    return new ApiException(err.message || 'Erro ao buscar exames');
+  }
+};
+
 const createAppointment = async (doctorId, patientId, date, time) => {
     try {
         const { data } = await Api().post(`/patients/${patientId}/doctors/${doctorId}/appointments`,{
@@ -25,5 +34,6 @@ const createAppointment = async (doctorId, patientId, date, time) => {
 
 export const AppointmentService = {
     getAvailableAppointment,
+    getAppointmentExams,
     createAppointment
 }
