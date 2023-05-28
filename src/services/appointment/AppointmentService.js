@@ -31,9 +31,19 @@ const createAppointment = async (doctorId, patientId, date, time) => {
     }
 }
 
+const deleteAppointment = async (appointmentId) => {
+    try {
+        const { data } = await Api().delete(`/appointments/${appointmentId}`);
+        return { data, error: false };
+    } catch (err) {
+        return new ApiException(err.message || 'Erro ao deletar Appointment')
+    }
+}
+
 
 export const AppointmentService = {
     getAvailableAppointment,
     getAppointmentExams,
-    createAppointment
+    createAppointment,
+    deleteAppointment
 }
