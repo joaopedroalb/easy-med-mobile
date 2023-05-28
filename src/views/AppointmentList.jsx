@@ -7,6 +7,7 @@ import Loading from '../components/Loading';
 import { DateService } from '../services/Date/DateService';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import appointmentTime from '../constants/appointmentTime';
+import { AppointmentService } from '../services/appointment/AppointmentService';
 
 const WIDTH = Dimensions.get('window').width;
 
@@ -32,6 +33,15 @@ const AppointmentList = () => {
         setLoading(false)
     }
 
+    const handleDelete = async (idAppointment) => {
+        const {data, error} = await AppointmentService.deleteAppointment(idAppointment)
+
+        if(error)
+            return null
+            
+        await getData()
+    }
+
     useEffect(()=>{
         getData()
     },[])
@@ -54,7 +64,7 @@ const AppointmentList = () => {
                                             <Text style={styles.cardHeaderText}>{appointmentTime[item.time]}</Text>
                                         </View>
                                         <Text>{item.doctor.name}</Text>
-                                        <TouchableOpacity  activeOpacity={.7} style={styles.btnDelete}>
+                                        <TouchableOpacity  activeOpacity={.7} style={styles.btnDelete} onPress={()=>handleDelete(item.id)}>
                                             <Text style={styles.btnDeleteText}>Cancelar</Text>
                                         </TouchableOpacity>
                                     </View>

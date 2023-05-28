@@ -2,7 +2,7 @@ import AppointmentHistory from "../views/AppointmentHistory/AppointmentHistory"
 import AppointmentList from "../views/AppointmentList"
 import DoctorProfile from "../views/DoctorProfile/DoctorProfile"
 import ListDoctors from "../views/ListDoctors/ListDoctors"
-import Medication from "../views/Medication"
+import MedicationList from "../views/Medications"
 import Profile from "../views/Profile"
 
 const tabs = {
@@ -17,7 +17,7 @@ const tabs = {
     MEDICATION: {
         key: 'MEDICATION',
         icon: 'user-circle',
-        component: Medication,
+        component: MedicationList,
         alwaysShow: true,
         label: 'Medicamentos'
       },

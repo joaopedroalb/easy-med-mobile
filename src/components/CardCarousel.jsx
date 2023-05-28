@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import { ScrollView, StyleSheet } from 'react-native';
 import Carousel from 'react-native-reanimated-carousel';
 
@@ -32,10 +32,10 @@ const CardCarousel = ({ cardsArray, carouselSettings }) => {
       contentContainerStyle={styles.cardContainer}
       showsHorizontalScrollIndicator={false}
     >
-      {cardsArray.map((card) => (
-        <>
+      {cardsArray.map((card, index) => (
+        <Fragment key={index}>
           {card}
-        </>
+        </Fragment>
       ))}
     </ScrollView>
   );
