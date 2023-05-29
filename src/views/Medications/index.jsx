@@ -52,7 +52,7 @@ const MedicationList = () => {
                   {
                     medications.length > 0 ? (
                       medications.map(medication=> {
-                        return <CardMedication name={medication.medicine.name} description={medication.frequency} key={medication.id}/>
+                        return <CardMedication name={medication.medicine.name} description={medication.frequency} key={medication.medicineId}/>
                       })
                     ) : <EmptyMedication />
                   }
