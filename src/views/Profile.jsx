@@ -262,7 +262,7 @@ const styles = StyleSheet.create({
         position:'absolute',
         left: 20,
         color: '#fff',
-        marginRight: 12
+        marginRight: 24
     },
 
     card: {
@@ -277,7 +277,7 @@ const styles = StyleSheet.create({
 
     cardScrollView: {
         position: 'relative',
-        width: 300,
+        minWidth: 300,
         height: 100,
         marginHorizontal: 8,
         display: 'flex',
