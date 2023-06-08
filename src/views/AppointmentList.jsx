@@ -8,6 +8,7 @@ import { DateService } from '../services/Date/DateService';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import appointmentTime from '../constants/appointmentTime';
 import { AppointmentService } from '../services/appointment/AppointmentService';
+import EmptyMessage from '../components/EmptyMessage';
 
 const WIDTH = Dimensions.get('window').width;
 
@@ -55,7 +56,7 @@ const AppointmentList = () => {
             </View>
             <View style={styles.bodyContent}>
                 {
-                    loading ? <Loading/> : appointmentList.length === 0 ? <Text>Sem itens</Text> : (
+                    loading ? <Loading/> : appointmentList.length === 0 ? <EmptyMessage message={'Nenhuma Consulta Agendada'} icon={'calendar-check'}/> : (
                             appointmentList.map(item=>{
                                 return (
                                     <View key={item.id} style={styles.card}>

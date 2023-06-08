@@ -80,7 +80,7 @@ const Login = () => {
               </Pressable>  
               {
                 errorLogin.hasError && (
-                  <Text style={{color:'red', fontSize: 14}} >{errorLogin.message}</Text>  
+                  <Text style={{color:'red', fontSize: 14}} >Login ou senha incorreta</Text>  
 
                 )
               }
